@@ -9,20 +9,17 @@ from pyomo.opt import SolverFactory
 df = pd.read_csv("data.csv")
 df_costs = df[['Calorias', 'Proteinas',
                'Azucar', 'Grasa', 'Carbohidratos']]
-print(df)
-print(df_costs)
 
 df_constraints = pd.read_csv("constraints.csv")
 df_constraints.fillna({'Limite superior': float('inf')}, inplace=True)
 df_constraints.fillna({'Limite inferior': 0}, inplace=True)
-print(df_constraints)
 
 # Definición de conjuntos
-n_nutrients = 5
-size = df.shape
+n_nutrients = df_costs.shape[1]
+a_foods = df_costs.shape[0]
 
 model = pyo.ConcreteModel(name="Distribución de alimentos")
-model.A = pyo.Set(initialize=df['#'].to_list())
+model.A = pyo.RangeSet(a_foods)
 model.N = pyo.RangeSet(n_nutrients)
 
 # Creación de modelo
