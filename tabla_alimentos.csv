@@ -1,0 +1,5 @@
+Tipo de alimento,Cantidad,Calorías (Cal),Proteínas (gr),Azúcar (gr),Grasa (gr),Carbohidratos (gr),Precio (COP)
+Carne,100 gr,287,26.0,0.0,19.3,0.0,3000
+Arroz,1 taza,204,4.2,0.01,0.5,44.1,1000
+Leche,1 taza,146,8.0,13.0,8.0,11.0,600
+Pan,100 gr,245,6.0,25.0,0.8,55.0,700

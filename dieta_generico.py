@@ -1,38 +1,56 @@
-# Daniel Triviño
-# María Paula Murillo
+#Daniel Triviño
+#María Paula Murillo
 
 # Importar librerías
-import pyomo.environ as pyo
+from  pyomo.environ  import *
 import pandas as pd
 from pyomo.opt import SolverFactory
-# Cargar datos
-df = pd.read_csv("data.csv")
-df_costs = df[['Calorías (Cal)', 'Proteínas (gr)',
-               'Azúcar (gr)', 'Grasa (gr)', 'Carbohidratos (gr)']]
-print(df)
-print(df_costs)
+model = ConcreteModel ()
 
-# Definición de conjuntos
-n_nutrients = 5
-size = df.shape
+#Cargar datos
+df_alimentos = pd.read_csv("tabla_alimentos.csv")
+print("Data Alimentos")
+print(df_alimentos)
 
-model = pyo.ConcreteModel(name="Distribución de alimentos")
-model.A = pyo.Set(initialize=df['No'].to_list())
-model.N = pyo.RangeSet(n_nutrients)
+#Dicicionario donde cada alimento tiene asociado sus beneficios
+dic_calorias = {k: v for k, v in zip(df_alimentos['# Alimento'], df_alimentos['Calorias'])}
+dic_proteinas = {k: v for k, v in zip(df_alimentos['# Alimento'], df_alimentos['Proteinas'])}
+dic_azucar = {k: v for k, v in zip(df_alimentos['# Alimento'], df_alimentos['Azucar'])}
+dic_grasa = {k: v for k, v in zip(df_alimentos['# Alimento'], df_alimentos['Grasa'])}
+dic_carbohidratos = {k: v for k, v in zip(df_alimentos['# Alimento'], df_alimentos['Carbohidratos'])}
+dic_precio = {k: v for k, v in zip(df_alimentos['# Alimento'], df_alimentos['Precio'])}
 
-# Creación de modelo
+#Conjuntos
+#Conjunto de Beneficios
+#1->Calorías
+#2->Proteínas
+#3->Azucar
+#4->Grasa
+#5->Carbohidratos
+model.B = RangeSet(1, 5)
+#Conjunto de Alimentos
+#1->Carne
+#2->Arroz
+#3->Leche
+#4->Pan
+model.A = RangeSet(1, 4)
 
-# Definición de parámetros
-param_precios = {k: v for k, v in zip(df['No'], df['Precio (COP)'])}
-param_costos = {(a, n): df_costs.iloc[a-1,n-1] for a in model.A for n in model.N}
-param_lower_bounds = {k:v for k, v in zip()}
-print(param_costos)
+#Parametros
+#Calorias
+model.C = Param(model.A,  name="Calorias", initialize=dic_calorias)
+#Proteinas
+model.P = Param(model.A, name="Proteinas", initialize=dic_proteinas)
+#Azucar
+model.AZ = Param(model.A, name="Azucar", initialize=dic_azucar)
+#Grasa
+model.G = Param(model.A, name="Grasa", initialize=dic_grasa)
+#Carbohidratos
+model.CA = Param(model.A, name="Carbohidratos", initialize=dic_carbohidratos)
+#Precio
+model.PR = Param(model.A, name="Precio", initialize=dic_precio)
 
+#Variable de decisión
+model.x = Var(model.A, domain=Binary)
 
-model.P = pyo.Param(model.A, name="Precios")
-model.C = pyo.Param(model.A, model.N, name="Costos Nutricionales")
-model.L = pyo.Param(model.N, name="Limite inferior")
-model.U = pyo.Param(model.N, name="Limite superior")
-
-# Definición de variable objetivo
-model.x = pyo.Var(model.A, domain=pyo.NonNegativeReals)
+#Función objetivo
+model.obj = Objective(expr=3000*model.B[0][a] + 1000*model.B[1][a] + 600*model.B[2][a] + 700*model.B, sense=minimize)
