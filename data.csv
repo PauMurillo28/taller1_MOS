@@ -1,4 +1,4 @@
-No,Tipo de alimento,Calorías (Cal),Proteínas (gr),Azúcar (gr),Grasa (gr),Carbohidratos (gr),Precio (COP)
+#,Tipo de alimento,Calorias,Proteinas,Azucar,Grasa,Carbohidratos,Precio
 1,Carne (100 gr),287,26,0,19.3,0,3000
 2,Arroz (1 taza),204,4.2,0.01,0.5,44.1,1000
 3,Leche (1 taza),146,8,13,8,11,600
